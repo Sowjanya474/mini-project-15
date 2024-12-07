@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}Red Wine Quality Dashboard{% endblock %}
+
+{% block content %}
+
+<title>Red Wine Quality Dashboard</title>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    .dashboard-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin: 20px;
+    }
+
+    .chart-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 20px;
+        width: 45%;
+        min-width: 400px;
+    }
+
+    .chart-container h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    footer {
+        background-color: #2c3e50;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        margin-top: 30px;
+    }
+</style>
+
+<header>
+    <h1>Red Wine Quality Dashboard</h1>
+    <p>Track the quality and characteristics of red wine with interactive visualizations.</p>
+</header>
+
+<section class="dashboard-container">
+
+    <!-- Bar Chart -->
+    <div class="chart-container">
+        <h3>Quality Scores in Different Wines</h3>
+        <canvas id="barChart"></canvas>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="chart-container">
+        <h3>Wine Quality Distribution</h3>
+        <canvas id="pieChart"></canvas>
+    </div>
+
+    <!-- Line Chart -->
+    <div class="chart-container">
+        <h3>Wine pH Levels Over Time</h3>
+        <canvas id="lineChart"></canvas>
+    </div>
+
+    <!-- Radar Chart -->
+    <div class="chart-container">
+        <h3>Wine Characteristics Comparison</h3>
+        <canvas id="radarChart"></canvas>
+    </div>
+
+    <!-- Scatter Plot -->
+    <div class="chart-container">
+        <h3>Alcohol vs. Acidity</h3>
+        <canvas id="scatterChart"></canvas>
+    </div>
+
+</section>
+
+<footer>
+    <p>&copy; 2024 Red Wine Quality App. All rights reserved.</p>
+</footer>
+
+<script>
+    // Bar Chart Data and Configuration
+    const barChartData = {
+        labels: ['Wine A', 'Wine B', 'Wine C', 'Wine D'],
+        datasets: [{
+            label: 'Quality Scores',
+            data: [85, 92, 78, 88],
+            backgroundColor: 'rgba(205, 92, 92, 0.6)',
+            borderColor: 'rgba(205, 92, 92, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    const barChartConfig = {
+        type: 'bar',
+        data: barChartData,
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, max: 100 },
+                x: { title: { display: true, text: 'Wines' } }
+            }
+        }
+    };
+
+    // Pie Chart Data and Configuration
+    const pieChartData = {
+        labels: ['Wine A', 'Wine B', 'Wine C', 'Wine D'],
+        datasets: [{
+            label: 'Wine Quality Distribution',
+            data: [30, 40, 20, 10],
+            backgroundColor: [
+                'rgba(205, 92, 92, 0.6)',
+                'rgba(255, 69, 0, 0.6)',
+                'rgba(139, 69, 19, 0.6)',
+                'rgba(153, 50, 204, 0.6)'
+            ]
+        }]
+    };
+
+    const pieChartConfig = {
+        type: 'pie',
+        data: pieChartData,
+        options: { responsive: true }
+    };
+
+    // Line Chart Data and Configuration
+    const lineChartData = {
+        labels: ['January', 'February', 'March', 'April', 'May'],
+        datasets: [{
+            label: 'pH Levels',
+            data: [3.4, 3.6, 3.5, 3.8, 3.7],
+            borderColor: 'rgba(72, 61, 139, 1)', // Purple line
+            backgroundColor: 'rgba(72, 61, 139, 0.2)',
+            tension: 0.4,
+            fill: true
+        }]
+    };
+
+    const lineChartConfig = {
+        type: 'line',
+        data: lineChartData,
+        options: {
+            responsive: true,
+            scales: {
+                y: { title: { display: true, text: 'pH Level' } }
+            }
+        }
+    };
+
+    // Radar Chart Data and Configuration
+    const radarChartData = {
+        labels: ['Acidity', 'Sweetness', 'Alcohol', 'Body', 'Aroma'],
+        datasets: [
+            {
+                label: 'Wine A',
+                data: [75, 65, 80, 90, 70],
+                backgroundColor: 'rgba(205, 92, 92, 0.2)',
+                borderColor: 'rgba(205, 92, 92, 1)',
+                borderWidth: 2
+            },
+            {
+                label: 'Wine B',
+                data: [85, 70, 75, 80, 95],
+                backgroundColor: 'rgba(72, 61, 139, 0.2)',
+                borderColor: 'rgba(72, 61, 139, 1)',
+                borderWidth: 2
+            }
+        ]
+    };
+
+    const radarChartConfig = {
+        type: 'radar',
+        data: radarChartData,
+        options: { responsive: true }
+    };
+
+    // Scatter Plot Data and Configuration
+    const scatterChartData = {
+        datasets: [{
+            label: 'Alcohol vs. Acidity',
+            data: [
+                { x: 10.5, y: 3.4 },
+                { x: 11.2, y: 3.6 },
+                { x: 12.0, y: 3.8 },
+                { x: 10.9, y: 3.5 }
+            ],
+            backgroundColor: 'rgba(139, 69, 19, 0.8)'
+        }]
+    };
+
+    const scatterChartConfig = {
+        type: 'scatter',
+        data: scatterChartData,
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'Alcohol Content (%)' } },
+                y: { title: { display: true, text: 'Acidity (pH)' } }
+            }
+        }
+    };
+
+    // Render Charts
+    new Chart(document.getElementById('barChart'), barChartConfig);
+    new Chart(document.getElementById('pieChart'), pieChartConfig);
+    new Chart(document.getElementById('lineChart'), lineChartConfig);
+    new Chart(document.getElementById('radarChart'), radarChartConfig);
+    new Chart(document.getElementById('scatterChart'), scatterChartConfig);
+</script>
+
+{% endblock %}

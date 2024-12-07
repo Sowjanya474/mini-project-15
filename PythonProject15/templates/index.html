@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}Red Wine Quality Page{% endblock %}
+
+{% block content %}
+
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 0;
+            background: #f8f3eb;
+            color: #5c3d2e;
+        }
+
+        header {
+            background: #7b1e24; /* Rich wine red */
+            color: #f8f3eb; /* Soft ivory */
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 30px;
+            background: #fdf8f2; /* Warm ivory background */
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .container h2 {
+            color: #7b1e24; /* Wine red */
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #bfa27f; /* Subtle gold tone */
+        }
+
+        th {
+            background: #7b1e24; /* Wine red */
+            color: #f8f3eb; /* Ivory */
+        }
+
+        td {
+            color: #5c3d2e; /* Warm brown */
+        }
+
+        tr:hover {
+            background: #f2e5d5; /* Subtle light gold */
+        }
+
+        .wine-name {
+            color: #7b1e24;
+            cursor: pointer;
+        }
+
+        button, a {
+            display: inline-block;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        button {
+            background-color: #c0392b; /* Wine-inspired red */
+            color: #f8f3eb;
+        }
+
+        button:hover {
+            background-color: #a83226; /* Darker red */
+        }
+
+        a {
+            background-color: #7b1e24; /* Wine red */
+            color: #f8f3eb;
+        }
+
+        a:hover {
+            background-color: #5a141a; /* Darker wine red */
+        }
+    </style>
+
+    <header>
+        Red Wine Quality Insights 🍷
+    </header>
+
+    <div class="container">
+        <h2>Red Wine Quality Data</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fixed Acidity</th>
+                    <th>Volatile Acidity</th>
+                    <th>Citric Acid</th>
+                    <th>Residual Sugar</th>
+                    <th>Chlorides</th>
+                    <th>Quality Score</th>
+                    <th>Delete</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for wine in content %}
+                <tr>
+                    <td>{{ wine.id }}</td>
+                    <td>{{ wine.fixed_acidity }}</td>
+                    <td>{{ wine.volatile_acidity }}</td>
+                    <td>{{ wine.citric_acid }}</td>
+                    <td>{{ wine.residual_sugar }}</td>
+                    <td>{{ wine.chlorides }}</td>
+                    <td>{{ wine.quality_score }}</td>
+                    <td>
+                        <button onclick="confirmDelete({{ wine.id }})">Delete</button>
+                    </td>
+                    <td>
+                        <a href="/update/{{ wine.id }}">Update</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function confirmDelete(id) {
+            const confirmation = confirm("Are you sure you want to delete this wine data?");
+            if (confirmation) {
+                fetch(`/delete/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.message === 'Wine deleted successfully') {
+                        window.location.reload();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+    </script>
+
+{% endblock %}
